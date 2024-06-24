@@ -1,5 +1,5 @@
 
-![alt text]('./public/React-App.png)
+![alt text](https://raw.githubusercontent.com/boreales/my-app/149769b5b1eedfe581472052bb01798a86b0df46/public/React-App.png)
 
 # Getting Started with Create React App
 
