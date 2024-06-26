@@ -12,18 +12,22 @@ function App() {
   const [language, setLanguage] = useState('');
   const [code, setCode] = useState('');
   const [search, setSearch] = useState('');
+  const [loaded, setIsLoaded] = useState(false);
   const snippetRefs = useRef([]);
 
-  useEffect(() => {
+  function loadedSnippets() {
     const savedSnippets = JSON.parse(localStorage.getItem('snippets'));
     if (savedSnippets) {
       setSnippets(savedSnippets);
     }
-  }, []);
+    setIsLoaded(true);
+  }
 
   useEffect(() => {
-    localStorage.setItem('snippets', JSON.stringify(snippets));
-  }, [snippets]);
+    if (!loaded) {
+      loadedSnippets();
+    }
+  }, []);
 
   const addSnippet = () => {
     if (title.trim() !== '' && code.trim() !== '') {
@@ -31,6 +35,7 @@ function App() {
       setTitle('');
       setCode('');
       setLanguage('');
+      localStorage.setItem('snippets', JSON.stringify([...snippets, { title, code, language }]));
     }
   };
 
