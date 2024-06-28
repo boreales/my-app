@@ -1,6 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { toPng } from 'html-to-image';
-import download from 'downloadjs';
 import './App.css';
 import Header from './components/header';
 import Snippet from './components/snippet';
@@ -35,27 +33,6 @@ function App() {
       setCode('');
       setLanguage('');
       localStorage.setItem('snippets', JSON.stringify([...snippets, { title, code, language }]));
-    }
-  };
-
-  const deleteSnippet = (index) => {
-    setSnippets(snippets.filter((_, i) => i !== index));
-    const savedSnippets = JSON.parse(localStorage.getItem('snippets'));
-    savedSnippets.splice(index, 1);
-    localStorage.setItem('snippets', JSON.stringify(savedSnippets));
-  };
-
-  const downloadSnippetImage = (index) => {
-    const node = snippetRefs.current[index];
-    console.log(node);
-    if (node) {
-      toPng(node)
-        .then((dataUrl) => {
-          download(dataUrl, `${snippets[index].title}.png`);
-        })
-        .catch((error) => {
-          console.error('Oops, something went wrong!', error);
-        });
     }
   };
 

@@ -33,11 +33,13 @@ const Snippet = memo(function Snippet(props) {
     return (
         <li key={props.codeId}>
             <h3>{props.snippet.title}</h3>
-            <div ref={el => snippetRefs.current[props.codeId] = el}>
-                <SyntaxHighlighter language={props.snippet.language} style={darcula}>
-                    {props.snippet.code}
-                </SyntaxHighlighter>
-            </div>
+            <a href={`/code/${props.codeId}`} key={props.codeId}>
+                <div ref={el => snippetRefs.current[props.codeId] = el}>
+                    <SyntaxHighlighter language={props.snippet.language} style={darcula}>
+                        {props.snippet.code}
+                    </SyntaxHighlighter>
+                </div>
+            </a>
             <button onClick={() => downloadSnippetImage(props.codeId)}>Download as Image</button>
             <button onClick={() => deleteSnippet(props.codeId)}>Delete</button>
         </li>
