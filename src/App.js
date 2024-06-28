@@ -4,7 +4,7 @@ import { darcula } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { toPng } from 'html-to-image';
 import download from 'downloadjs';
 import './App.css';
-import logo from './logo.svg';
+import Header from './components/header';
 
 function App() {
   const [snippets, setSnippets] = useState([]);
@@ -41,6 +41,9 @@ function App() {
 
   const deleteSnippet = (index) => {
     setSnippets(snippets.filter((_, i) => i !== index));
+    const savedSnippets = JSON.parse(localStorage.getItem('snippets'));
+    savedSnippets.splice(index, 1);
+    localStorage.setItem('snippets', JSON.stringify(savedSnippets));
   };
 
   const downloadSnippetImage = (index) => {
@@ -57,43 +60,40 @@ function App() {
     }
   };
 
-  const filteredSnippets = snippets.filter(snippet => 
-    snippet.title.toLowerCase().includes(search.toLowerCase()) || 
+  const filteredSnippets = snippets.filter(snippet =>
+    snippet.title.toLowerCase().includes(search.toLowerCase()) ||
     snippet.code.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
     <div className="App">
-      <header className="App-header">
-        <h1>Code Snippet Manager</h1>
-        <img src={logo} className='App-logo' alt='logo' />
-        <div className='App-form'>
-          <input 
-            type="text" 
-            value={title} 
-            onChange={(e) => setTitle(e.target.value)} 
-            placeholder="Snippet Title" 
-          />
-          <input 
-            type="text" 
-            value={language} 
-            onChange={(e) => setLanguage(e.target.value)} 
-            placeholder="Snippet Language" 
-          />
-          <textarea 
-            value={code} 
-            onChange={(e) => setCode(e.target.value)} 
-            placeholder="Snippet Code"
-          />
-          <button onClick={addSnippet}>Add Snippet</button>
-          <input 
-            type="text" 
-            value={search} 
-            onChange={(e) => setSearch(e.target.value)} 
-            placeholder="Search Snippets"
-          />
-        </div>
-      </header>
+      <Header />
+      <div className='App-form'>
+        <input
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Snippet Title"
+        />
+        <input
+          type="text"
+          value={language}
+          onChange={(e) => setLanguage(e.target.value)}
+          placeholder="Snippet Language"
+        />
+        <textarea
+          value={code}
+          onChange={(e) => setCode(e.target.value)}
+          placeholder="Snippet Code"
+        />
+        <button onClick={addSnippet}>Add Snippet</button>
+        <input
+          type="text"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search Snippets"
+        />
+      </div>
       <div className="App-body">
         <ul>
           {filteredSnippets.map((snippet, index) => (
@@ -106,6 +106,7 @@ function App() {
               </div>
               <button onClick={() => downloadSnippetImage(index)}>Download as Image</button>
               <button onClick={() => deleteSnippet(index)}>Delete</button>
+              <a href={"/code/" + index}>Show as plain page</a>
             </li>
           ))}
         </ul>
