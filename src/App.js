@@ -13,6 +13,7 @@ function App() {
   const [loaded, setIsLoaded] = useState(false);
   const [filter, setFilter] = useState('all');
   const [tagFilterSnippets, setTagFilterSnippets] = useState([]);
+  const [uniqueLanguages, setUniqueLanguages] = useState([]);
 
   function loadedSnippets() {
     const savedSnippets = JSON.parse(localStorage.getItem('snippets'));
@@ -26,7 +27,9 @@ function App() {
     if (!loaded) {
       loadedSnippets();
     }
-  }, []);
+    const languages = new Set(snippets.map(snippet => snippet.language));
+    setUniqueLanguages([...languages]);
+  }, [snippets]);
 
   const addSnippet = () => {
     if (title.trim() !== '' && code.trim() !== '') {
@@ -88,8 +91,8 @@ function App() {
           onChange={(e) => changeFilter(e)}
         >
           <option value='all'>All</option>
-          {snippets.map(snippet => (
-            <option value={snippet.language}>{snippet.language}</option>
+          {uniqueLanguages.map(language => (
+            <option key={language} value={language}>{language}</option>
           ))}
         </select>
         <ul>
