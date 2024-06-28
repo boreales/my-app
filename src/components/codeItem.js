@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import Snippet from './snippet';
 import Header from './header';
 
-function Test() {
+function CodeItem() {
   const [loaded, setIsLoaded] = useState(false);
   const [snippet, setSnippet] = useState([]);
   let { codeId } = useParams();
@@ -37,4 +37,4 @@ function Test() {
   );
 }
 
-export default Test;
+export default CodeItem;

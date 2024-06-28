@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { darcula } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { toPng } from 'html-to-image';
 import download from 'downloadjs';
 import './App.css';
 import Header from './components/header';
+import Snippet from './components/snippet';
 
 function App() {
   const [snippets, setSnippets] = useState([]);
@@ -97,17 +96,7 @@ function App() {
       <div className="App-body">
         <ul>
           {filteredSnippets.map((snippet, index) => (
-            <li key={index}>
-              <h3>{snippet.title}</h3>
-              <div ref={el => snippetRefs.current[index] = el}>
-                <SyntaxHighlighter language={snippet.language} style={darcula}>
-                  {snippet.code}
-                </SyntaxHighlighter>
-              </div>
-              <button onClick={() => downloadSnippetImage(index)}>Download as Image</button>
-              <button onClick={() => deleteSnippet(index)}>Delete</button>
-              <a href={"/code/" + index}>Show as plain page</a>
-            </li>
+            <Snippet codeId={index} snippet={snippet} />
           ))}
         </ul>
       </div>

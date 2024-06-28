@@ -3,8 +3,9 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { darcula } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { toPng } from 'html-to-image';
 import download from 'downloadjs';
+import { memo } from 'react';
 
-function Snippet(props) {
+const Snippet = memo(function Snippet(props) {
     const [snippets, setSnippets] = useState([]);
     const snippetRefs = useRef([]);
 
@@ -41,6 +42,6 @@ function Snippet(props) {
             <button onClick={() => deleteSnippet(props.codeId)}>Delete</button>
         </li>
     );
-}
+});
 
 export default Snippet;
