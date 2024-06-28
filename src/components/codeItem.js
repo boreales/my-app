@@ -27,7 +27,7 @@ function CodeItem() {
   return (
     <div className="App">
       <Header />
-      <a href={"/"}>Back</a>
+      <a className="link" href={"/"}>Back</a>
       <div className="App-body">
         <ul>
           <Snippet snippet={snippet} codeId={codeId} />

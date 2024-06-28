@@ -79,3 +79,14 @@ color: #61dafb;
     transform: rotate(360deg);
   }
 }
+
+a{
+  text-decoration: none;
+}
+
+.link {
+  padding:10px;
+  background-color: #61dafb;
+  color:white;
+  text-decoration: none;
+}

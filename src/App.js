@@ -72,8 +72,9 @@ function App() {
       </div>
       <div className="App-body">
         <ul>
+          {filteredSnippets.length === 0 && <li>No snippets found</li>}
           {filteredSnippets.map((snippet, index) => (
-            <Snippet codeId={index} snippet={snippet} />
+            <Snippet snippets={snippets} setSnippets={setSnippets} codeId={index} snippet={snippet} />
           ))}
         </ul>
       </div>

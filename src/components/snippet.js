@@ -6,7 +6,8 @@ import download from 'downloadjs';
 import { memo } from 'react';
 
 const Snippet = memo(function Snippet(props) {
-    const [snippets, setSnippets] = useState([]);
+    const snippets = props.snippets;
+    const setSnippets = props.setSnippets;
     const snippetRefs = useRef([]);
 
     const downloadSnippetImage = (index) => {
