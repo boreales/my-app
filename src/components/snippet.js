@@ -4,7 +4,8 @@ import { darcula } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { toPng } from 'html-to-image';
 import download from 'downloadjs';
 import { memo } from 'react';
-import {CopyToClipboard} from 'react-copy-to-clipboard';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { BsDownload, BsCopy, BsFillTrash3Fill } from "react-icons/bs";
 
 const Snippet = memo(function Snippet(props) {
     const snippets = props.snippets;
@@ -45,11 +46,11 @@ const Snippet = memo(function Snippet(props) {
             </a>
             <CopyToClipboard text={props.snippet.code}
                 onCopy={() => setCopied(true)}>
-                <span>Copy to clipboard with span</span>
+                <button> <BsCopy /> Copy to clipboard</button>
             </CopyToClipboard>
-            {copied ? <span style={{color: 'red'}}>Copied.</span> : null}
-            <button onClick={() => downloadSnippetImage(props.codeId)}>Download as Image</button>
-            <button onClick={() => deleteSnippet(props.codeId)}>Delete</button>
+            {copied ? <span style={{ color: 'green' }}>Copied.</span> : null}
+            <button onClick={() => downloadSnippetImage(props.codeId)}><BsDownload /> Download as Image</button>
+            <button onClick={() => deleteSnippet(props.codeId)}><BsFillTrash3Fill /> Delete</button>
         </li>
     );
 });

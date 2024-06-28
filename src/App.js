@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
 import Header from './components/header';
 import Snippet from './components/snippet';
+import {BsFillPlusCircleFill} from 'react-icons/bs';
 
 function App() {
   const [snippets, setSnippets] = useState([]);
@@ -10,7 +11,8 @@ function App() {
   const [code, setCode] = useState('');
   const [search, setSearch] = useState('');
   const [loaded, setIsLoaded] = useState(false);
-  const snippetRefs = useRef([]);
+  const [filter, setFilter] = useState('all');
+  const [tagFilterSnippets, setTagFilterSnippets] = useState([]);
 
   function loadedSnippets() {
     const savedSnippets = JSON.parse(localStorage.getItem('snippets'));
@@ -41,6 +43,15 @@ function App() {
     snippet.code.toLowerCase().includes(search.toLowerCase())
   );
 
+  function changeFilter(e) {
+    setFilter(e.target.value)
+    let filteredSnippets = snippets.filter(snippet => snippet.language === e.target.value)
+    if (e.target.value === 'all') {
+      setTagFilterSnippets([]);
+    }
+    setTagFilterSnippets(filteredSnippets);
+  }
+
   return (
     <div className="App">
       <Header />
@@ -62,7 +73,7 @@ function App() {
           onChange={(e) => setCode(e.target.value)}
           placeholder="Snippet Code"
         />
-        <button onClick={addSnippet}>Add Snippet</button>
+        <button onClick={addSnippet}><BsFillPlusCircleFill /> Add Snippet</button>
         <input
           type="text"
           value={search}
@@ -71,9 +82,22 @@ function App() {
         />
       </div>
       <div className="App-body">
+        <span>Filter by language:</span>
+        <select
+          value={filter}
+          onChange={(e) => changeFilter(e)}
+        >
+          <option value='all'>All</option>
+          {snippets.map(snippet => (
+            <option value={snippet.language}>{snippet.language}</option>
+          ))}
+        </select>
         <ul>
-          {filteredSnippets.length === 0 && <li>No snippets found</li>}
-          {filteredSnippets.map((snippet, index) => (
+          {tagFilterSnippets.length > 0 && tagFilterSnippets.map((snippet, index) => (
+            <Snippet snippets={snippets} setSnippets={setSnippets} codeId={index} snippet={snippet} />
+          ))}
+          {tagFilterSnippets.length === 0 && filteredSnippets.length === 0 && <li>No snippets found</li>}
+          {tagFilterSnippets.length === 0 && filteredSnippets.map((snippet, index) => (
             <Snippet snippets={snippets} setSnippets={setSnippets} codeId={index} snippet={snippet} />
           ))}
         </ul>
