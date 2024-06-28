@@ -4,11 +4,13 @@ import { darcula } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { toPng } from 'html-to-image';
 import download from 'downloadjs';
 import { memo } from 'react';
+import {CopyToClipboard} from 'react-copy-to-clipboard';
 
 const Snippet = memo(function Snippet(props) {
     const snippets = props.snippets;
     const setSnippets = props.setSnippets;
     const snippetRefs = useRef([]);
+    const [copied, setCopied] = useState(false);
 
     const downloadSnippetImage = (index) => {
         const node = snippetRefs.current[index];
@@ -41,6 +43,11 @@ const Snippet = memo(function Snippet(props) {
                     </SyntaxHighlighter>
                 </div>
             </a>
+            <CopyToClipboard text={props.snippet.code}
+                onCopy={() => setCopied(true)}>
+                <span>Copy to clipboard with span</span>
+            </CopyToClipboard>
+            {copied ? <span style={{color: 'red'}}>Copied.</span> : null}
             <button onClick={() => downloadSnippetImage(props.codeId)}>Download as Image</button>
             <button onClick={() => deleteSnippet(props.codeId)}>Delete</button>
         </li>
