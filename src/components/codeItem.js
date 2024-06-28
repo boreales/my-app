@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import Snippet from './snippet';
-import Header from './header';
+import Snippet from './Snippet';
+import Header from './Header';
 
 function CodeItem() {
   const [loaded, setIsLoaded] = useState(false);

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
-import Header from './components/header';
-import Snippet from './components/snippet';
+import Header from './components/Header';
+import Snippet from './components/Snippet';
 import {BsFillPlusCircleFill} from 'react-icons/bs';
 
 function App() {
@@ -85,7 +85,7 @@ function App() {
         />
       </div>
       <div className="App-body">
-        <span>Filter by language:</span>
+        <p>Filter by language:</p>
         <select
           value={filter}
           onChange={(e) => changeFilter(e)}
