@@ -130,3 +130,7 @@ a{
 .error{
   color: #d31d1d;
 }
+.center{
+  display: flex;
+  justify-content: center;
+}

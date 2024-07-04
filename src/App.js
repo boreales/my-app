@@ -6,6 +6,7 @@ import Pagination from './components/Pagination';
 import Form from './components/Form';
 import './firebase.js';
 import { getDatabase, ref, onValue } from "firebase/database";
+import {InfinitySpin} from 'react-loader-spinner';
 
 const SNIPPETS_PER_PAGE = 2;
 
@@ -64,34 +65,50 @@ function App() {
   return (
     <div className="App">
       <Header />
-      <Form snippets={snippets} setSnippets={setSnippets} setSearch={setSearch} />
-      <div className="App-body">
-        <p>Filter by language:</p>
-        <select
-          value={filter}
-          onChange={(e) => changeFilter(e)}
-        >
-          <option value='all'>All</option>
-          {uniqueLanguages.map(language => (
-            <option key={language} value={language}>{language}</option>
-          ))}
-        </select>
-        {!loaded && <p>Loading...</p>}
-        <ul>
-          {tagFilterSnippets.length > 0 && currentSnippets.map((snippet, index) => (
-            <Snippet snippets={snippets} setSnippets={setSnippets} codeId={index} snippet={snippet} />
-          ))}
-          {loaded && tagFilterSnippets.length === 0 && filteredSnippets.length === 0 && <li>No snippets found</li>}
-          {tagFilterSnippets.length === 0 && currentSnippets.map((snippet, index) => (
-            <Snippet snippets={snippets} setSnippets={setSnippets} codeId={index} snippet={snippet} />
-          ))}
-        </ul>
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
-        />
-      </div>
+      {!loaded &&
+          <>
+            <div className='center'>
+              <InfinitySpin
+              visible={true}
+              width="200"
+              color="#61dafb"
+              ariaLabel="infinity-spin-loading"
+              />
+            </div>
+            <p>Loading ...</p>
+          </>
+        }
+        {loaded && 
+        <>
+          <Form snippets={snippets} setSnippets={setSnippets} setSearch={setSearch} />
+          <div className="App-body">
+            <p>Filter by language:</p>
+            <select
+              value={filter}
+              onChange={(e) => changeFilter(e)}
+            >
+              <option value='all'>All</option>
+              {uniqueLanguages.map(language => (
+                <option key={language} value={language}>{language}</option>
+              ))}
+            </select>
+            <ul>
+              {tagFilterSnippets.length > 0 && currentSnippets.map((snippet, index) => (
+                <Snippet snippets={snippets} setSnippets={setSnippets} codeId={index} snippet={snippet} />
+              ))}
+              {loaded && tagFilterSnippets.length === 0 && filteredSnippets.length === 0 && <li>No snippets found</li>}
+              {tagFilterSnippets.length === 0 && currentSnippets.map((snippet, index) => (
+                <Snippet snippets={snippets} setSnippets={setSnippets} codeId={index} snippet={snippet} />
+              ))}
+            </ul>
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
+          </div>
+        </>
+      }
     </div>
   );
 }
