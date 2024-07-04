@@ -127,3 +127,6 @@ a{
   cursor: not-allowed;
   opacity: 0.5;
 }
+.error{
+  color: #d31d1d;
+}
