@@ -4,15 +4,17 @@ import { initializeApp } from "firebase/app";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
+console.log('Database URL:', process.env.REACT_APP_DATABASEURL);
+
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyD4Nm41gN8_-7OQ0oz3PQJJbhtpyfyBn_I",
-  authDomain: "react-app-74ec9.firebaseapp.com",
+  apiKey: process.env.REACT_APP_APIKEY,
+  authDomain: process.env.REACT_APP_AUTHDOMAIN,
   databaseURL: "https://react-app-74ec9-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "react-app-74ec9",
-  storageBucket: "react-app-74ec9.appspot.com",
-  messagingSenderId: "692377415770",
-  appId: "1:692377415770:web:edd0ca7d8cc30223d76863"
+  projectId: process.env.REACT_APP_PROJECTID,
+  storageBucket: process.env.REACT_APP_STORAGEBUCKET,
+  messagingSenderId: process.env.REACT_APP_MESSAGINGSENDERID,
+  appId: process.env.REACT_APP_APPID
 };
 
 // Initialize Firebase
