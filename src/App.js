@@ -1,17 +1,14 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import Header from './components/Header';
 import Snippet from './components/Snippet';
-import {BsFillPlusCircleFill} from 'react-icons/bs';
 import Pagination from './components/Pagination';
+import Form from './components/Form';
 
 const SNIPPETS_PER_PAGE = 2;
 
 function App() {
   const [snippets, setSnippets] = useState([]);
-  const [title, setTitle] = useState('');
-  const [language, setLanguage] = useState('');
-  const [code, setCode] = useState('');
   const [search, setSearch] = useState('');
   const [loaded, setIsLoaded] = useState(false);
   const [filter, setFilter] = useState('all');
@@ -35,17 +32,7 @@ function App() {
     }
     const languages = new Set(snippets.map(snippet => snippet.language));
     setUniqueLanguages([...languages]);
-  }, [snippets]);
-
-  const addSnippet = () => {
-    if (title.trim() !== '' && code.trim() !== '') {
-      setSnippets([...snippets, { title, code, language }]);
-      setTitle('');
-      setCode('');
-      setLanguage('');
-      localStorage.setItem('snippets', JSON.stringify([...snippets, { title, code, language }]));
-    }
-  };
+  }, [snippets, loaded]);
 
   const filteredSnippets = snippets.filter(snippet =>
     snippet.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -71,32 +58,7 @@ function App() {
   return (
     <div className="App">
       <Header />
-      <div className='App-form'>
-        <input
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="Snippet Title"
-        />
-        <input
-          type="text"
-          value={language}
-          onChange={(e) => setLanguage(e.target.value)}
-          placeholder="Snippet Language"
-        />
-        <textarea
-          value={code}
-          onChange={(e) => setCode(e.target.value)}
-          placeholder="Snippet Code"
-        />
-        <button onClick={addSnippet}><BsFillPlusCircleFill /> Add Snippet</button>
-        <input
-          type="text"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search Snippets"
-        />
-      </div>
+      <Form snippets={snippets} setSnippets={setSnippets} setSearch={setSearch} />
       <div className="App-body">
         <p>Filter by language:</p>
         <select

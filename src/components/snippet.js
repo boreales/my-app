@@ -6,12 +6,14 @@ import download from 'downloadjs';
 import { memo } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { BsDownload, BsCopy, BsFillTrash3Fill } from "react-icons/bs";
+import EditSnippetForm from './EditSnippet';
 
 const Snippet = memo(function Snippet(props) {
     const snippets = props.snippets;
     const setSnippets = props.setSnippets;
     const snippetRefs = useRef([]);
     const [copied, setCopied] = useState(false);
+    const [snippetToEdit, setSnippetToEdit] = useState(null);
 
     const downloadSnippetImage = (index) => {
         const node = snippetRefs.current[index];
@@ -34,6 +36,21 @@ const Snippet = memo(function Snippet(props) {
         localStorage.setItem('snippets', JSON.stringify(savedSnippets));
     };
 
+    const handleEdit = (snippet) => {
+      setSnippetToEdit(snippet);
+    };
+  
+    const handleSave = (updatedSnippet) => {
+        setSnippets(snippets.map(snippet => 
+            snippet.id === updatedSnippet.id ? updatedSnippet : snippet
+        ));
+        setSnippetToEdit(null);
+    };
+
+    const handleCancel = () => {
+        setSnippetToEdit(null);
+      };
+
     return (
         <li key={props.codeId}>
             <h3>{props.snippet.title}</h3>
@@ -50,6 +67,10 @@ const Snippet = memo(function Snippet(props) {
             </CopyToClipboard>
             {copied ? <span style={{ color: 'green' }}>Copied.</span> : null}
             <button onClick={() => downloadSnippetImage(props.codeId)}><BsDownload /> Download as Image</button>
+            <button onClick={() => handleEdit(props.snippet)}>Éditer</button>
+            {snippetToEdit && (
+                <EditSnippetForm snippet={snippetToEdit} onSave={handleSave} onCancel={handleCancel}/>
+            )}
             <button onClick={() => deleteSnippet(props.codeId)}><BsFillTrash3Fill /> Delete</button>
         </li>
     );
