@@ -4,6 +4,8 @@ import Header from './components/Header';
 import Snippet from './components/Snippet';
 import Pagination from './components/Pagination';
 import Form from './components/Form';
+import './firebase.js';
+import { getDatabase, ref, onValue } from "firebase/database";
 
 const SNIPPETS_PER_PAGE = 2;
 
@@ -16,14 +18,18 @@ function App() {
   const [uniqueLanguages, setUniqueLanguages] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const db = getDatabase();
+  const snippetsFromDB = ref(db, 'snippets');
 
-  function loadedSnippets() {
-    const savedSnippets = JSON.parse(localStorage.getItem('snippets'));
-    if (savedSnippets) {
-      setSnippets(savedSnippets);
-    }
-    setIsLoaded(true);
-    setTotalPages(Math.ceil(savedSnippets.length / SNIPPETS_PER_PAGE));
+  async function loadedSnippets() {
+    onValue(snippetsFromDB, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        setSnippets(Object.values(data));
+        setIsLoaded(true);
+        setTotalPages(Math.ceil(data.length / SNIPPETS_PER_PAGE));
+      }
+    });
   }
 
   useEffect(() => {
@@ -70,11 +76,12 @@ function App() {
             <option key={language} value={language}>{language}</option>
           ))}
         </select>
+        {!loaded && <p>Loading...</p>}
         <ul>
           {tagFilterSnippets.length > 0 && currentSnippets.map((snippet, index) => (
             <Snippet snippets={snippets} setSnippets={setSnippets} codeId={index} snippet={snippet} />
           ))}
-          {tagFilterSnippets.length === 0 && filteredSnippets.length === 0 && <li>No snippets found</li>}
+          {loaded && tagFilterSnippets.length === 0 && filteredSnippets.length === 0 && <li>No snippets found</li>}
           {tagFilterSnippets.length === 0 && currentSnippets.map((snippet, index) => (
             <Snippet snippets={snippets} setSnippets={setSnippets} codeId={index} snippet={snippet} />
           ))}

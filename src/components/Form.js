@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import {BsFillPlusCircleFill} from 'react-icons/bs';
+import { getDatabase, ref, set } from "firebase/database";
 
 function Form(props) {
   const [title, setTitle] = useState('');
@@ -7,12 +8,15 @@ function Form(props) {
   const [code, setCode] = useState('');
 
   const addSnippet = () => {
+    const db = getDatabase();
     if (title.trim() !== '' && code.trim() !== '') {
-      props.setSnippets([...props.snippets, { title, code, language }]);
+      let newSnippet = { title, code, language };
+      props.setSnippets([...props.snippets, newSnippet]);
       setTitle('');
       setCode('');
       setLanguage('');
-      localStorage.setItem('snippets', JSON.stringify([...props.snippets, { title, code, language }]));
+      localStorage.setItem('snippets', JSON.stringify([...props.snippets, newSnippet]));
+      set(ref(db, 'snippets/'), [...props.snippets, newSnippet]);
     }
   };
 
