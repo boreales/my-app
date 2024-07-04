@@ -3,6 +3,9 @@ import './App.css';
 import Header from './components/Header';
 import Snippet from './components/Snippet';
 import {BsFillPlusCircleFill} from 'react-icons/bs';
+import Pagination from './components/Pagination';
+
+const SNIPPETS_PER_PAGE = 2;
 
 function App() {
   const [snippets, setSnippets] = useState([]);
@@ -14,6 +17,7 @@ function App() {
   const [filter, setFilter] = useState('all');
   const [tagFilterSnippets, setTagFilterSnippets] = useState([]);
   const [uniqueLanguages, setUniqueLanguages] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
 
   function loadedSnippets() {
     const savedSnippets = JSON.parse(localStorage.getItem('snippets'));
@@ -54,6 +58,10 @@ function App() {
     }
     setTagFilterSnippets(filteredSnippets);
   }
+
+  const totalPages = Math.ceil(filteredSnippets.length / SNIPPETS_PER_PAGE);
+  const startIndex = (currentPage - 1) * SNIPPETS_PER_PAGE;
+  const currentSnippets = filteredSnippets.slice(startIndex, startIndex + SNIPPETS_PER_PAGE);
 
   return (
     <div className="App">
@@ -100,10 +108,15 @@ function App() {
             <Snippet snippets={snippets} setSnippets={setSnippets} codeId={index} snippet={snippet} />
           ))}
           {tagFilterSnippets.length === 0 && filteredSnippets.length === 0 && <li>No snippets found</li>}
-          {tagFilterSnippets.length === 0 && filteredSnippets.map((snippet, index) => (
+          {tagFilterSnippets.length === 0 && currentSnippets.map((snippet, index) => (
             <Snippet snippets={snippets} setSnippets={setSnippets} codeId={index} snippet={snippet} />
           ))}
         </ul>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
       </div>
     </div>
   );
