@@ -18,6 +18,7 @@ function App() {
   const [tagFilterSnippets, setTagFilterSnippets] = useState([]);
   const [uniqueLanguages, setUniqueLanguages] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   function loadedSnippets() {
     const savedSnippets = JSON.parse(localStorage.getItem('snippets'));
@@ -25,6 +26,7 @@ function App() {
       setSnippets(savedSnippets);
     }
     setIsLoaded(true);
+    setTotalPages(Math.ceil(savedSnippets.length / SNIPPETS_PER_PAGE));
   }
 
   useEffect(() => {
@@ -55,14 +57,17 @@ function App() {
     let filteredSnippets = snippets.filter(snippet => snippet.language === e.target.value)
     if (e.target.value === 'all') {
       setTagFilterSnippets([]);
+      setTotalPages(Math.ceil(snippets.length / SNIPPETS_PER_PAGE));
+    } else {
+      setTagFilterSnippets(filteredSnippets);
+      setTotalPages(Math.ceil(filteredSnippets.length / SNIPPETS_PER_PAGE));
     }
-    setTagFilterSnippets(filteredSnippets);
   }
 
-  const totalPages = Math.ceil(filteredSnippets.length / SNIPPETS_PER_PAGE);
   const startIndex = (currentPage - 1) * SNIPPETS_PER_PAGE;
-  const currentSnippets = filteredSnippets.slice(startIndex, startIndex + SNIPPETS_PER_PAGE);
-
+  console.log(tagFilterSnippets.length);
+  const currentSnippets = tagFilterSnippets.length > 0 ? tagFilterSnippets.slice(startIndex, startIndex + SNIPPETS_PER_PAGE) : filteredSnippets.slice(startIndex, startIndex + SNIPPETS_PER_PAGE);
+  
   return (
     <div className="App">
       <Header />
@@ -104,7 +109,7 @@ function App() {
           ))}
         </select>
         <ul>
-          {tagFilterSnippets.length > 0 && tagFilterSnippets.map((snippet, index) => (
+          {tagFilterSnippets.length > 0 && currentSnippets.map((snippet, index) => (
             <Snippet snippets={snippets} setSnippets={setSnippets} codeId={index} snippet={snippet} />
           ))}
           {tagFilterSnippets.length === 0 && filteredSnippets.length === 0 && <li>No snippets found</li>}
