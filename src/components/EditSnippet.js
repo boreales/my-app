@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/material.css';
-import 'codemirror/theme/neat.css';
-import 'codemirror/mode/xml/xml.js';
-import 'codemirror/mode/htmlmixed/htmlmixed.js';
 import 'codemirror/mode/php/php.js';
+import 'codemirror/mode/haml/haml.js';
 import 'codemirror/mode/javascript/javascript.js';
 import { UnControlled as CodeMirror } from 'react-codemirror2';
 
@@ -21,7 +19,7 @@ function EditSnippetForm({ snippet, onSave, onCancel }) {
       <CodeMirror
         value={code}
         options={{
-          mode: snippet.language,
+          mode: snippet.language === 'html' ? 'haml' : snippet.language,
           theme: 'material',
           lineNumbers: true
         }}

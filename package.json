@@ -7,6 +7,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "@uiw/codemirror-theme-androidstudio": "^4.23.0",
+    "axios": "^1.7.2",
     "codemirror": "^5.65.16",
     "downloadjs": "^1.4.7",
     "firebase": "^10.12.3",

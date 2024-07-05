@@ -7,6 +7,7 @@ import Form from './components/Form';
 import './firebase.js';
 import { getDatabase, ref, onValue } from "firebase/database";
 import {InfinitySpin} from 'react-loader-spinner';
+import Auth from './components/Auth';
 
 const SNIPPETS_PER_PAGE = 2;
 
@@ -80,6 +81,7 @@ function App() {
         }
         {loaded && 
         <>
+          <Auth/>
           <Form snippets={snippets} setSnippets={setSnippets} setSearch={setSearch} />
           <div className="App-body">
             <p>Filter by language:</p>
