@@ -20,6 +20,7 @@ function App() {
   const [uniqueLanguages, setUniqueLanguages] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [isLogged, setIsLogged] = useState(false);
   const db = getDatabase();
   const snippetsFromDB = ref(db, 'snippets');
 
@@ -35,8 +36,14 @@ function App() {
   }
 
   useEffect(() => {
-    if (!loaded) {
-      loadedSnippets();
+    const userId = localStorage.getItem('userId');
+    if (userId) {
+      setIsLogged(true);
+      if (!loaded) {
+        loadedSnippets();
+      }
+    } else {
+      setIsLoaded(true);
     }
     const languages = new Set(snippets.map(snippet => snippet.language));
     setUniqueLanguages([...languages]);
@@ -59,6 +66,11 @@ function App() {
     }
   }
 
+  function logout() {
+    localStorage.removeItem('userId');
+    setIsLogged(false);
+  }
+
   const startIndex = (currentPage - 1) * SNIPPETS_PER_PAGE;
   console.log(tagFilterSnippets.length);
   const currentSnippets = tagFilterSnippets.length > 0 ? tagFilterSnippets.slice(startIndex, startIndex + SNIPPETS_PER_PAGE) : filteredSnippets.slice(startIndex, startIndex + SNIPPETS_PER_PAGE);
@@ -66,6 +78,7 @@ function App() {
   return (
     <div className="App">
       <Header />
+      {isLogged && <button type="button" className="link" onClick={logout}>Logout</button> }
       {!loaded &&
           <>
             <div className='center'>
@@ -81,7 +94,11 @@ function App() {
         }
         {loaded && 
         <>
-          <Auth/>
+        {!isLogged && 
+          <Auth setIsLogged={setIsLogged} />
+        }
+        {isLogged &&
+          <>
           <Form snippets={snippets} setSnippets={setSnippets} setSearch={setSearch} />
           <div className="App-body">
             <p>Filter by language:</p>
@@ -109,6 +126,8 @@ function App() {
               onPageChange={setCurrentPage}
             />
           </div>
+          </>
+        }
         </>
       }
     </div>
