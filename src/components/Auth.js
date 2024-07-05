@@ -14,9 +14,11 @@ function Auth() {
         console.log('Creating user...');
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         console.log('User created:', userCredential.user);
+        localStorage.setItem('userId', userCredential.user.uid);
       } else {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         console.log('User signed in:', userCredential.user);
+        localStorage.setItem('userId', userCredential.user.uid);
       }
     } catch (error) {
       console.error('Error:', error);
