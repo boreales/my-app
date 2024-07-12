@@ -2,6 +2,8 @@ import React from 'react';
 
 function Pagination({ currentPage, totalPages, onPageChange }) {
   const pages = [...Array(totalPages).keys()].map(num => num + 1);
+  //const pages = [];
+  console.log(...Array(totalPages).keys());
 
   return (
     <nav>

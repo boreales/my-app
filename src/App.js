@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import Header from './components/Header';
-import Snippet from './components/Snippet';
+import Header from './components/Header.js';
+import Snippet from './components/Snippet.js';
 import Pagination from './components/Pagination';
 import Form from './components/Form';
 import './firebase.js';
-import { getDatabase, ref, onValue } from "firebase/database";
+import { getDatabase, ref, get, child } from "firebase/database";
 import {InfinitySpin} from 'react-loader-spinner';
 import Auth from './components/Auth';
 
@@ -21,21 +21,28 @@ function App() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [isLogged, setIsLogged] = useState(false);
-  const db = getDatabase();
-  const snippetsFromDB = ref(db, 'snippets');
+  const userId = localStorage.getItem('userId');
+  const dbRef = ref(getDatabase());
 
   async function loadedSnippets() {
-    onValue(snippetsFromDB, (snapshot) => {
-      const data = snapshot.val();
-      if (data) {
-        setSnippets(Object.values(data));
-        setIsLoaded(true);
-        setTotalPages(Math.ceil(data.length / SNIPPETS_PER_PAGE));
+    get(child(dbRef, `snippets/${userId}`)).then((snapshot) => {
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+        console.log(data);
+        if (data) {
+          setSnippets(Object.entries(data));
+          setIsLoaded(true);
+          setTotalPages(Math.ceil(Object.entries(data).length / SNIPPETS_PER_PAGE));
+        }
+      } else {
+        console.log("No data available");
       }
+    }).catch((error) => {
+      console.error(error);
     });
   }
 
-  useEffect(() => {
+   useEffect(() => {
     const userId = localStorage.getItem('userId');
     if (userId) {
       setIsLogged(true);
@@ -49,10 +56,18 @@ function App() {
     setUniqueLanguages([...languages]);
   }, [snippets, loaded]);
 
-  const filteredSnippets = snippets.filter(snippet =>
-    snippet.title.toLowerCase().includes(search.toLowerCase()) ||
-    snippet.code.toLowerCase().includes(search.toLowerCase())
-  );
+  const filterSnippets = (snippets, search) => {
+    console.log('Get list snippets', snippets);
+    return snippets.filter(([id, snippet]) => {
+      const title = (snippet.title || '').toLowerCase();
+      const code = (snippet.code || '').toLowerCase();
+      const searchLower = search.toLowerCase();
+      
+      return title.includes(searchLower) || code.includes(searchLower);
+    }).map(([id, snippet]) => ({ id, ...snippet }));
+  };
+  
+  const filteredSnippets = filterSnippets(snippets, search);
 
   function changeFilter(e) {
     setFilter(e.target.value)
@@ -72,8 +87,10 @@ function App() {
   }
 
   const startIndex = (currentPage - 1) * SNIPPETS_PER_PAGE;
-  console.log(tagFilterSnippets.length);
-  const currentSnippets = tagFilterSnippets.length > 0 ? tagFilterSnippets.slice(startIndex, startIndex + SNIPPETS_PER_PAGE) : filteredSnippets.slice(startIndex, startIndex + SNIPPETS_PER_PAGE);
+  const objectToArray = obj => Object.entries(obj).map(([id, data]) => ({id, ...data}));
+
+  const currentSnippets = (tagFilterSnippets.length > 0 ? objectToArray(tagFilterSnippets) : objectToArray(filteredSnippets))
+    .slice(startIndex, startIndex + SNIPPETS_PER_PAGE);
   
   return (
     <div className="App">
